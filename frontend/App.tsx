@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import {
@@ -337,6 +338,7 @@ function StatCard({
 
 function DashboardScreen() {
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const [values, setValues] = useState<DashboardValues>(EMPTY_VALUES);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -375,7 +377,12 @@ function DashboardScreen() {
   }, [loadData]);
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+    <ImageBackground
+      source={backgroundImage}
+      style={styles.background}
+      imageStyle={width < 700 ? styles.backgroundImagePhoneCrop : styles.backgroundImageDefault}
+      resizeMode="cover"
+    >
       <View style={styles.backgroundOverlay} />
       <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
         <StatusBar style="light" />
@@ -475,6 +482,10 @@ export default function App() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+  },
+  backgroundImageDefault: {},
+  backgroundImagePhoneCrop: {
+    transform: [{ translateX: -140 }],
   },
   backgroundOverlay: {
     ...StyleSheet.absoluteFillObject,
