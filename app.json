@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "BMW Leasing Dashboard",
+    "slug": "bmw-leasing-dashboard",
+    "version": "1.0.0",
+    "scheme": "bmwleasingdashboard",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B1220"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "de.sebastian.bmwleasingdashboard"
+    },
+    "android": {
+      "package": "de.sebastian.bmwleasingdashboard",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#0B1220"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png",
+      "bundler": "metro",
+      "output": "single",
+      "themeColor": "#0B1220"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3c257b7e-ee1a-4456-8a65-2ccd780978c2"
+      }
+    },
+    "owner": "ebonyandivory84"
+  }
+}
