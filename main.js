@@ -36,6 +36,15 @@ class BmwLeasingDashboard extends utils.Adapter {
     return ids.filter((id) => typeof id === "string" && id.trim().length > 0);
   }
 
+  isLikelyValidBind(bind) {
+    if (typeof bind !== "string") return false;
+    const value = bind.trim();
+    if (!value) return false;
+    if (value === "0.0.0.0" || value === "::" || value === "localhost") return true;
+    if (value.includes(",") || value.includes(" ")) return false;
+    return true;
+  }
+
   async getStatePayload(id) {
     const state = await this.getForeignStateAsync(id);
     if (!state) return null;
@@ -158,11 +167,22 @@ class BmwLeasingDashboard extends utils.Adapter {
     this.app = express();
     this.app.use(express.json({ limit: "100kb" }));
 
+    let bind = typeof this.config.bind === "string" ? this.config.bind.trim() : "";
+    let port = Number(this.config.port) || 8099;
+
+    // Guard against misconfigured admin input where state IDs were pasted into "bind".
+    if (!this.isLikelyValidBind(bind)) {
+      const fallbackStateIds = bind;
+      if ((!this.config.stateIds || String(this.config.stateIds).trim() === "") && fallbackStateIds) {
+        this.config.stateIds = fallbackStateIds;
+        this.log.warn("Recovered stateIds from invalid bind field.");
+      }
+      bind = "0.0.0.0";
+      this.log.warn("Invalid bind value detected. Falling back to 0.0.0.0");
+    }
+
     this.registerApiRoutes();
     this.registerStaticRoutes();
-
-    const port = Number(this.config.port) || 8099;
-    const bind = this.config.bind || "0.0.0.0";
 
     await new Promise((resolve, reject) => {
       this.server = this.app.listen(port, bind, () => {
