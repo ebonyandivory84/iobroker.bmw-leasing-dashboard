@@ -4,7 +4,8 @@
   "items": {
     "serverHeader": {
       "type": "header",
-      "text": "Server"
+      "text": "Server",
+      "size": 2
     },
     "bind": {
       "type": "text",
@@ -32,6 +33,7 @@
     "statesHeader": {
       "type": "header",
       "text": "Dashboard State IDs",
+      "size": 2,
       "newLine": true
     },
     "statesHint": {
