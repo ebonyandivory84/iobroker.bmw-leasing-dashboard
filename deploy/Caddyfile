@@ -1,0 +1,15 @@
+:80 {
+  encode gzip zstd
+
+  # Web dashboard static files
+  root * /var/www/bmw-leasing-dashboard
+  file_server
+
+  # iobroker simple-api proxy for web app requests
+  handle_path /api/* {
+    reverse_proxy 127.0.0.1:8087
+  }
+
+  # SPA fallback
+  try_files {path} /index.html
+}

@@ -3,5 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "dist",
+    ".expo"
+  ]
 }

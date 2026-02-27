@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Image,
   ImageBackground,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -186,7 +187,8 @@ async function fetchSingleState(base: string, id: string, headers: Record<string
 }
 
 async function fetchBulkStates(): Promise<DashboardValues> {
-  if (!iobrokerBaseUrl) {
+  const runtimeBaseUrl = iobrokerBaseUrl || (Platform.OS === "web" ? "/api" : undefined);
+  if (!runtimeBaseUrl) {
     throw new Error("EXPO_PUBLIC_IOBROKER_URL fehlt.");
   }
 
@@ -200,7 +202,7 @@ async function fetchBulkStates(): Promise<DashboardValues> {
     headers.Authorization = `Bearer ${iobrokerAuthToken}`;
   }
 
-  const base = iobrokerBaseUrl.replace(/\/$/, "");
+  const base = runtimeBaseUrl.replace(/\/$/, "");
   const endpoints = [
     {
       url: `${base}/getBulk`,

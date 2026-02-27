@@ -58,6 +58,39 @@ Voraussetzung: Apple Developer Account.
   - in Safari: `Ablage -> Zum Dock hinzufuegen`.
   - in Chrome: `Installieren` (PWA).
 
+## Raspberry Webserver (empfohlen fuer dein VPN-Setup)
+
+Damit laeuft das Dashboard direkt auf dem Raspberry und nutzt lokal iobroker ueber `/api`.
+
+### Einmalige Einrichtung auf Raspberry
+
+1. Caddy installieren:
+   ```bash
+   sudo apt update && sudo apt install -y caddy
+   ```
+2. Projekt von deinem Mac deployen:
+   ```bash
+   ./scripts/deploy-rpi.sh pi@192.168.44.31 /var/www/bmw-leasing-dashboard
+   ```
+3. Caddyfile aktivieren:
+   ```bash
+   ssh pi@192.168.44.31
+   sudo cp ~/Caddyfile.bmw-leasing-dashboard /etc/caddy/Caddyfile
+   sudo systemctl reload caddy
+   ```
+
+Danach erreichbar unter:
+
+- `http://192.168.44.31/`
+
+### Update deployen
+
+Nach jeder Aenderung:
+
+```bash
+./scripts/deploy-rpi.sh pi@192.168.44.31 /var/www/bmw-leasing-dashboard
+```
+
 ## Web-Dashboard Deploy
 
 ### Vercel
@@ -97,3 +130,42 @@ Die App probiert automatisch mehrere Endpunkte:
 - `GET /getBulk?ids=id1,id2,...`
 - `GET /getBulk/id1,id2,...`
 - Fallback pro State: `/get/...`, `/get?id=...`, `/getPlainValue/...`
+
+## ioBroker Adapter (alles aus einem Guss)
+
+Der Adapter liefert das Dashboard selbst aus und liest die States direkt ueber den js-controller.
+
+### Build fuer Adapter aktualisieren
+
+```bash
+npm run adapter:web
+```
+
+### Adapter-Abhaengigkeiten installieren
+
+```bash
+npm run adapter:install-deps
+```
+
+### Manuelle Installation auf ioBroker-Host
+
+1. Ordner `adapter/` auf den ioBroker-Host kopieren (z. B. nach `/opt/iobroker/iobroker-data/files/` oder in ein Git-Repo).
+2. Auf dem ioBroker-Host im Adapter-Ordner:
+   ```bash
+   npm install --production
+   ```
+3. Adapter in ioBroker als Custom Adapter installieren (Quelle: lokaler Pfad oder Git).
+4. Instanz starten.
+
+Default URL nach Start:
+
+- `http://<iobroker-host>:8099/`
+
+API-Endpunkte (adapter-intern):
+
+- `GET/POST /api/getBulk`
+- `GET /api/getBulk/:ids`
+- `GET /api/get/:id`
+- `GET /api/get?id=...`
+- `GET /api/getPlainValue/:id`
+- `GET /api/dashboard`

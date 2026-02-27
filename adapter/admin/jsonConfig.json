@@ -1,0 +1,36 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "bind": {
+      "type": "text",
+      "label": "Bind address",
+      "newLine": true,
+      "default": "0.0.0.0",
+      "sm": 12,
+      "md": 6,
+      "lg": 6
+    },
+    "port": {
+      "type": "number",
+      "label": "Port",
+      "min": 1,
+      "max": 65535,
+      "default": 8099,
+      "sm": 12,
+      "md": 6,
+      "lg": 6
+    },
+    "stateIds": {
+      "type": "textarea",
+      "label": "State IDs (one per line)",
+      "help": "Each line must contain a full iobroker state id, e.g. 0_userdata.0.LeasingBMW.remainingKmTotalRaw",
+      "rows": 14,
+      "default": "0_userdata.0.LeasingBMW.remainingKmTotalRaw\n0_userdata.0.LeasingBMW.overKmTotal\n0_userdata.0.LeasingBMW.daysLeftLease\n0_userdata.0.LeasingBMW.avgKmPerDayFromNow\n0_userdata.0.LeasingBMW.dayDeltaKmSigned\n0_userdata.0.LeasingBMW.weekDeltaKmSigned\n0_userdata.0.LeasingBMW.monthDeltaKmSigned\n0_userdata.0.LeasingBMW.usedKmThisWeek\n0_userdata.0.LeasingBMW.weekAllowanceAtWeekStart\n0_userdata.0.LeasingBMW.usedKmThisMonth\n0_userdata.0.LeasingBMW.monthAllowanceAtMonthStart\n0_userdata.0.LeasingBMW.usedKmThisDay\n0_userdata.0.LeasingBMW.todayAllowance\n0_userdata.0.LeasingBMW.drivenKmTotalRaw",
+      "newLine": true,
+      "sm": 12,
+      "md": 12,
+      "lg": 12
+    }
+  }
+}

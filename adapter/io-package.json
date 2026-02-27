@@ -1,0 +1,55 @@
+{
+  "common": {
+    "name": "bmw-leasing-dashboard",
+    "version": "0.1.0",
+    "titleLang": {
+      "en": "BMW Leasing Dashboard",
+      "de": "BMW Leasing Dashboard"
+    },
+    "desc": {
+      "en": "Integrated dashboard webserver for BMW leasing metrics",
+      "de": "Integrierter Dashboard-Webserver fuer BMW-Leasing-Metriken"
+    },
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "compact": true,
+    "enabled": true,
+    "type": "visualization",
+    "loglevel": "info",
+    "readme": "https://github.com/CHANGE-ME/iobroker.bmw-leasing-dashboard/blob/main/README.md",
+    "icon": "icon.png",
+    "adminUI": {
+      "config": "json"
+    },
+    "materialize": true,
+    "dataFolder": "data",
+    "connectionType": "local",
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ]
+  },
+  "native": {
+    "bind": "0.0.0.0",
+    "port": 8099,
+    "stateIds": [
+      "0_userdata.0.LeasingBMW.remainingKmTotalRaw",
+      "0_userdata.0.LeasingBMW.overKmTotal",
+      "0_userdata.0.LeasingBMW.daysLeftLease",
+      "0_userdata.0.LeasingBMW.avgKmPerDayFromNow",
+      "0_userdata.0.LeasingBMW.dayDeltaKmSigned",
+      "0_userdata.0.LeasingBMW.weekDeltaKmSigned",
+      "0_userdata.0.LeasingBMW.monthDeltaKmSigned",
+      "0_userdata.0.LeasingBMW.usedKmThisWeek",
+      "0_userdata.0.LeasingBMW.weekAllowanceAtWeekStart",
+      "0_userdata.0.LeasingBMW.usedKmThisMonth",
+      "0_userdata.0.LeasingBMW.monthAllowanceAtMonthStart",
+      "0_userdata.0.LeasingBMW.usedKmThisDay",
+      "0_userdata.0.LeasingBMW.todayAllowance",
+      "0_userdata.0.LeasingBMW.drivenKmTotalRaw"
+    ]
+  },
+  "objects": [],
+  "instanceObjects": []
+}
