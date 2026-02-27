@@ -19,6 +19,10 @@
     "readme": "https://github.com/ebonyandivory84/iobroker.bmw-leasing-dashboard/blob/main/README.md",
     "icon": "icon.png",
     "extIcon": "https://raw.githubusercontent.com/ebonyandivory84/iobroker.bmw-leasing-dashboard/main/icon.png",
+    "localLink": "http://%ip%:%native_port%/",
+    "localLinks": {
+      "Open Dashboard": "http://%ip%:%native_port%/"
+    },
     "welcomeScreen": {
       "name": {
         "en": "Open Dashboard",
