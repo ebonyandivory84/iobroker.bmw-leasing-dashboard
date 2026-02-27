@@ -29,7 +29,7 @@ class BmwLeasingDashboard extends utils.Adapter {
       ? raw
       : typeof raw === "string"
         ? raw
-            .split(/\r?\n/)
+            .split(/[\r\n,;]+/)
             .map((line) => line.trim())
             .filter(Boolean)
         : [];
