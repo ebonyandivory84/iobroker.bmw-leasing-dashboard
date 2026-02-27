@@ -16,7 +16,7 @@
     "enabled": true,
     "type": "visualization",
     "loglevel": "info",
-    "readme": "https://github.com/CHANGE-ME/iobroker.bmw-leasing-dashboard/blob/main/README.md",
+    "readme": "https://github.com/ebonyandivory84/iobroker.bmw-leasing-dashboard/blob/main/README.md",
     "icon": "icon.png",
     "adminUI": {
       "config": "json"
