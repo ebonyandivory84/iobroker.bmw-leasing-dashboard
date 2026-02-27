@@ -1,0 +1,33 @@
+{
+  "name": "bmw-leasing-app",
+  "version": "1.0.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "start:tunnel": "expo start --tunnel",
+    "build:web": "expo export --platform web",
+    "preview:web": "npx serve dist",
+    "adapter:web": "./scripts/build-adapter-web.sh",
+    "adapter:install-deps": "npm --prefix adapter install"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-web": "^0.21.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.1.10",
+    "babel-preset-expo": "~54.0.10",
+    "eas-cli": "^18.0.5",
+    "typescript": "~5.9.2"
+  }
+}
