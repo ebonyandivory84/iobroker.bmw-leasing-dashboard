@@ -376,11 +376,18 @@ function DashboardScreen() {
     return () => clearInterval(timer);
   }, [loadData]);
 
+  const phoneBackgroundImageStyle =
+    width < 700
+      ? Platform.OS === "web"
+        ? styles.backgroundImagePhoneCropWeb
+        : styles.backgroundImagePhoneCropNative
+      : styles.backgroundImageDefault;
+
   return (
     <ImageBackground
       source={backgroundImage}
       style={styles.background}
-      imageStyle={width < 700 ? styles.backgroundImagePhoneCrop : styles.backgroundImageDefault}
+      imageStyle={phoneBackgroundImageStyle}
       resizeMode="cover"
     >
       <View style={styles.backgroundOverlay} />
@@ -484,9 +491,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backgroundImageDefault: {},
-  backgroundImagePhoneCrop: {
+  backgroundImagePhoneCropNative: {
+    transform: [{ translateX: -140 }],
+  },
+  backgroundImagePhoneCropWeb: {
     left: -140,
-    right: 0,
+    right: 180,
   },
   backgroundOverlay: {
     ...StyleSheet.absoluteFillObject,
