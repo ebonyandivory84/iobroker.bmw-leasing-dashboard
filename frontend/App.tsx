@@ -376,13 +376,29 @@ function DashboardScreen() {
     return () => clearInterval(timer);
   }, [loadData]);
 
+  const backgroundImageUri = Image.resolveAssetSource(backgroundImage).uri;
+  const webBackgroundStyle =
+    Platform.OS === "web"
+      ? ({
+          backgroundImage: `url("${backgroundImageUri}")`,
+          backgroundPosition: width < 700 ? "72% center" : "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        } as const)
+      : null;
+
   return (
-    <ImageBackground
-      source={backgroundImage}
-      style={styles.background}
-      imageStyle={width < 700 ? styles.backgroundImagePhoneCrop : styles.backgroundImageDefault}
-      resizeMode="cover"
-    >
+    <View style={styles.background}>
+      {Platform.OS === "web" ? (
+        <View pointerEvents="none" style={[styles.backgroundImageLayer, webBackgroundStyle as never]} />
+      ) : (
+        <ImageBackground
+          source={backgroundImage}
+          style={styles.backgroundImageLayer}
+          imageStyle={width < 700 ? styles.backgroundImagePhoneCrop : styles.backgroundImageDefault}
+          resizeMode="cover"
+        />
+      )}
       <View style={styles.backgroundOverlay} />
       <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
         <StatusBar style="light" />
@@ -467,7 +483,7 @@ function DashboardScreen() {
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -482,6 +498,9 @@ export default function App() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+  },
+  backgroundImageLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
   backgroundImageDefault: {},
   backgroundImagePhoneCrop: {
