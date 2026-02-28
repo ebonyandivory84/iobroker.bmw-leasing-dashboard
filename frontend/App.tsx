@@ -376,20 +376,23 @@ function DashboardScreen() {
     return () => clearInterval(timer);
   }, [loadData]);
 
-  const phoneBackgroundImageStyle =
-    width < 700
-      ? Platform.OS === "web"
-        ? styles.backgroundImagePhoneCropWeb
-        : styles.backgroundImagePhoneCropNative
+  const backgroundLayerStyle =
+    width < 700 && Platform.OS === "web"
+      ? styles.backgroundLayerPhoneWeb
+      : styles.backgroundLayerDefault;
+  const backgroundImageStyle =
+    width < 700 && Platform.OS !== "web"
+      ? styles.backgroundImagePhoneCropNative
       : styles.backgroundImageDefault;
 
   return (
-    <ImageBackground
-      source={backgroundImage}
-      style={styles.background}
-      imageStyle={phoneBackgroundImageStyle}
-      resizeMode="cover"
-    >
+    <View style={styles.background}>
+      <ImageBackground
+        source={backgroundImage}
+        style={[styles.backgroundLayerBase, backgroundLayerStyle]}
+        imageStyle={backgroundImageStyle}
+        resizeMode="cover"
+      />
       <View style={styles.backgroundOverlay} />
       <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
         <StatusBar style="light" />
@@ -474,7 +477,7 @@ function DashboardScreen() {
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -489,14 +492,19 @@ export default function App() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    overflow: "hidden",
+  },
+  backgroundLayerBase: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  backgroundLayerDefault: {},
+  backgroundLayerPhoneWeb: {
+    left: -260,
+    right: 60,
   },
   backgroundImageDefault: {},
   backgroundImagePhoneCropNative: {
     transform: [{ translateX: -140 }],
-  },
-  backgroundImagePhoneCropWeb: {
-    left: -140,
-    right: 180,
   },
   backgroundOverlay: {
     ...StyleSheet.absoluteFillObject,
