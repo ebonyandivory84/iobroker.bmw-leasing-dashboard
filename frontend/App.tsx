@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  ImageBackground,
   Platform,
   RefreshControl,
   ScrollView,
@@ -338,7 +337,7 @@ function StatCard({
 
 function DashboardScreen() {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [values, setValues] = useState<DashboardValues>(EMPTY_VALUES);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -376,21 +375,24 @@ function DashboardScreen() {
     return () => clearInterval(timer);
   }, [loadData]);
 
-  const backgroundLayerStyle =
-    width < 700 && Platform.OS === "web"
-      ? styles.backgroundLayerPhoneWeb
-      : styles.backgroundLayerDefault;
-  const backgroundImageStyle =
-    width < 700 && Platform.OS !== "web"
-      ? styles.backgroundImagePhoneCropNative
-      : styles.backgroundImageDefault;
+  const backgroundAspectRatio = 1920 / 1080;
+  const renderWidthFromHeight = height * backgroundAspectRatio;
+  const shouldScaleByHeight = renderWidthFromHeight >= width;
+  const backgroundRenderWidth = shouldScaleByHeight ? renderWidthFromHeight : width;
+  const backgroundRenderHeight = shouldScaleByHeight ? height : width / backgroundAspectRatio;
+  const backgroundFocalPoint = width < 700 ? 0.6 : 0.5;
+  const backgroundImageFrame = {
+    width: backgroundRenderWidth,
+    height: backgroundRenderHeight,
+    left: width / 2 - backgroundRenderWidth * backgroundFocalPoint,
+    top: (height - backgroundRenderHeight) / 2,
+  } as const;
 
   return (
     <View style={styles.background}>
-      <ImageBackground
+      <Image
         source={backgroundImage}
-        style={[styles.backgroundLayerBase, backgroundLayerStyle]}
-        imageStyle={backgroundImageStyle}
+        style={[styles.backgroundImage, backgroundImageFrame]}
         resizeMode="cover"
       />
       <View style={styles.backgroundOverlay} />
@@ -494,17 +496,8 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: "hidden",
   },
-  backgroundLayerBase: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  backgroundLayerDefault: {},
-  backgroundLayerPhoneWeb: {
-    left: -260,
-    right: 60,
-  },
-  backgroundImageDefault: {},
-  backgroundImagePhoneCropNative: {
-    transform: [{ translateX: -140 }],
+  backgroundImage: {
+    position: "absolute",
   },
   backgroundOverlay: {
     ...StyleSheet.absoluteFillObject,
