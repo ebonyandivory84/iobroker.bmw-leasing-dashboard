@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   sollScaleTrack: {
-    height: 6,
+    height: 3,
     borderRadius: 999,
     backgroundColor: "#FFFFFF",
     position: "relative",
