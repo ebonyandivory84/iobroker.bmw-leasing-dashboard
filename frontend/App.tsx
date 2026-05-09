@@ -367,7 +367,8 @@ function SollKmPerDayCard({
   const scaleLabels = useMemo(() => {
     if (!range) return [];
     const labels: Array<{ text: string; fraction: number }> = [];
-    for (let tick = range.min; tick <= range.max + 0.0001; tick += 0.5) {
+    const firstTick = Math.ceil(range.min * 2) / 2;
+    for (let tick = firstTick; tick <= range.max + 0.0001; tick += 0.5) {
       labels.push({
         text: tick.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
         fraction: (tick - range.min) / (range.max - range.min),
