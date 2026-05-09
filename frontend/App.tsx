@@ -25,6 +25,7 @@ const STATE_IDS = {
   overKmTotal: "0_userdata.0.LeasingBMW.overKmTotal",
   daysLeftLease: "0_userdata.0.LeasingBMW.daysLeftLease",
   avgKmPerDayFromNow: "0_userdata.0.LeasingBMW.avgKmPerDayFromNow",
+  avgKmPerDayFromNowExact: "0_userdata.0.LeasingBMW.avgKmPerDayFromNowExact",
   avgKmPerDayFromNowPrev2359: "0_userdata.0.LeasingBMW.avgKmPerDayFromNowPrev2359",
   dayDeltaKmSigned: "0_userdata.0.LeasingBMW.dayDeltaKmSigned",
   weekDeltaKmSigned: "0_userdata.0.LeasingBMW.weekDeltaKmSigned",
@@ -47,6 +48,7 @@ const EMPTY_VALUES: DashboardValues = {
   overKmTotal: null,
   daysLeftLease: null,
   avgKmPerDayFromNow: null,
+  avgKmPerDayFromNowExact: null,
   avgKmPerDayFromNowPrev2359: null,
   dayDeltaKmSigned: null,
   weekDeltaKmSigned: null,
@@ -339,21 +341,23 @@ function StatCard({
 
 function SollKmPerDayCard({
   value,
+  exactValue,
   prevValue,
 }: {
   value: number | null;
+  exactValue: number | null;
   prevValue: number | null;
 }) {
   const range = useMemo(() => {
-    if (value === null) return null;
-    const center = Math.round(value * 10) / 10;
+    if (exactValue === null) return null;
+    const center = Math.round(exactValue * 10) / 10;
     return { min: center - 1, max: center + 1 };
-  }, [value]);
+  }, [exactValue]);
 
   const redPos = useMemo(() => {
-    if (value === null || !range) return null;
-    return Math.max(0, Math.min(1, (value - range.min) / (range.max - range.min)));
-  }, [value, range]);
+    if (exactValue === null || !range) return null;
+    return Math.max(0, Math.min(1, (exactValue - range.min) / (range.max - range.min)));
+  }, [exactValue, range]);
 
   const grayPos = useMemo(() => {
     if (prevValue === null || !range) return null;
@@ -521,6 +525,7 @@ function DashboardScreen() {
                 <StatCard label="Tage bis Rückgabe" value={values.daysLeftLease} unit="Tage" />
                 <SollKmPerDayCard
                   value={values.avgKmPerDayFromNow}
+                  exactValue={values.avgKmPerDayFromNowExact ?? values.avgKmPerDayFromNow}
                   prevValue={values.avgKmPerDayFromNowPrev2359}
                 />
                 <StatCard
