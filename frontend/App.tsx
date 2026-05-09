@@ -346,7 +346,7 @@ function SollKmPerDayCard({
 }) {
   const range = useMemo(() => {
     if (value === null) return null;
-    const center = Math.round(value * 2) / 2;
+    const center = Math.round(value * 10) / 10;
     return { min: center - 1, max: center + 1 };
   }, [value]);
 
@@ -363,7 +363,7 @@ function SollKmPerDayCard({
   const scaleLabels = useMemo(() => {
     if (!range) return [];
     const labels: Array<{ text: string; fraction: number }> = [];
-    for (let tick = range.min; tick <= range.max + 0.0001; tick += 0.5) {
+    for (let tick = range.min; tick <= range.max + 0.0001; tick += 0.1) {
       labels.push({
         text: tick.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         fraction: (tick - range.min) / (range.max - range.min),
