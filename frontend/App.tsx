@@ -344,15 +344,11 @@ function SollKmPerDayCard({
   value: number | null;
   prevValue: number | null;
 }) {
-  const displayValue = useMemo(() => {
-    if (value === null) return null;
-    return Math.round(value);
-  }, [value]);
-
   const range = useMemo(() => {
-    if (displayValue === null) return null;
-    return { min: displayValue - 1, max: displayValue + 1 };
-  }, [displayValue]);
+    if (value === null) return null;
+    const center = Math.round(value * 2) / 2;
+    return { min: center - 1, max: center + 1 };
+  }, [value]);
 
   const redPos = useMemo(() => {
     if (value === null || !range) return null;
@@ -364,11 +360,17 @@ function SollKmPerDayCard({
     return Math.max(0, Math.min(1, (prevValue - range.min) / (range.max - range.min)));
   }, [prevValue, range]);
 
-  const startLabel = range ? range.min.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "--";
-  const midLabel = range
-    ? ((range.min + range.max) / 2).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : "--";
-  const endLabel = range ? range.max.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "--";
+  const scaleLabels = useMemo(() => {
+    if (!range) return [];
+    const labels: Array<{ text: string; fraction: number }> = [];
+    for (let tick = range.min; tick <= range.max + 0.0001; tick += 0.5) {
+      labels.push({
+        text: tick.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        fraction: (tick - range.min) / (range.max - range.min),
+      });
+    }
+    return labels;
+  }, [range]);
 
   return (
     <View style={styles.statCard}>
@@ -405,9 +407,14 @@ function SollKmPerDayCard({
             ) : null}
           </View>
           <View style={styles.sollScaleLabels}>
-            <Text style={styles.sollScaleLabel}>{startLabel}</Text>
-            <Text style={styles.sollScaleLabel}>{midLabel}</Text>
-            <Text style={styles.sollScaleLabel}>{endLabel}</Text>
+            {scaleLabels.map((label, index) => (
+              <Text
+                key={`label-${index}`}
+                style={[styles.sollScaleLabel, { left: `${label.fraction * 100}%` }]}
+              >
+                {label.text}
+              </Text>
+            ))}
           </View>
         </View>
       </View>
@@ -701,10 +708,10 @@ const styles = StyleSheet.create({
     height: 0,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderBottomWidth: 8,
+    borderTopWidth: 8,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderBottomColor: "#94A3B8",
+    borderTopColor: "#94A3B8",
   },
   sollMarkerBottom: {
     position: "absolute",
@@ -713,19 +720,22 @@ const styles = StyleSheet.create({
     height: 0,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderTopWidth: 8,
+    borderBottomWidth: 8,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: "#DC2626",
+    borderBottomColor: "#DC2626",
   },
   sollScaleLabels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    height: 12,
+    position: "relative",
   },
   sollScaleLabel: {
+    position: "absolute",
+    marginLeft: -14,
+    width: 28,
+    textAlign: "center",
     color: "#CBD5E1",
-    fontSize: 10,
+    fontSize: 9,
   },
   statLabel: {
     color: "#94A3B8",
