@@ -344,10 +344,15 @@ function SollKmPerDayCard({
   value: number | null;
   prevValue: number | null;
 }) {
-  const range = useMemo(() => {
+  const displayValue = useMemo(() => {
     if (value === null) return null;
-    return { min: value - 1, max: value + 1 };
+    return Math.round(value);
   }, [value]);
+
+  const range = useMemo(() => {
+    if (displayValue === null) return null;
+    return { min: displayValue - 1, max: displayValue + 1 };
+  }, [displayValue]);
 
   const redPos = useMemo(() => {
     if (value === null || !range) return null;
@@ -376,7 +381,24 @@ function SollKmPerDayCard({
               <View style={[styles.sollMarkerTop, { left: `${grayPos * 100}%` }]} />
             ) : null}
           </View>
-          <View style={styles.sollScaleTrack} />
+          <View style={styles.sollScaleTrack}>
+            {range
+              ? Array.from({ length: 21 }, (_, index) => {
+                  const fraction = index / 20;
+                  const isMajor = index % 5 === 0;
+                  return (
+                    <View
+                      key={`tick-${index}`}
+                      style={[
+                        styles.sollTick,
+                        isMajor ? styles.sollTickMajor : null,
+                        { left: `${fraction * 100}%` },
+                      ]}
+                    />
+                  );
+                })
+              : null}
+          </View>
           <View style={styles.sollScaleBottomMarkerLane}>
             {redPos !== null ? (
               <View style={[styles.sollMarkerBottom, { left: `${redPos * 100}%` }]} />
@@ -652,6 +674,21 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 999,
     backgroundColor: "rgba(203, 213, 225, 0.8)",
+    position: "relative",
+    overflow: "hidden",
+  },
+  sollTick: {
+    position: "absolute",
+    top: 2,
+    marginLeft: -0.5,
+    width: 1,
+    height: 2,
+    backgroundColor: "rgba(30, 41, 59, 0.55)",
+  },
+  sollTickMajor: {
+    top: 1,
+    height: 4,
+    backgroundColor: "rgba(30, 41, 59, 0.85)",
   },
   sollScaleBottomMarkerLane: {
     height: 10,
