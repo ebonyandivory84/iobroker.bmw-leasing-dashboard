@@ -25,6 +25,7 @@ const STATE_IDS = {
   overKmTotal: "0_userdata.0.LeasingBMW.overKmTotal",
   daysLeftLease: "0_userdata.0.LeasingBMW.daysLeftLease",
   avgKmPerDayFromNow: "0_userdata.0.LeasingBMW.avgKmPerDayFromNow",
+  avgKmPerDayFromNowPrev2359: "0_userdata.0.LeasingBMW.avgKmPerDayFromNowPrev2359",
   dayDeltaKmSigned: "0_userdata.0.LeasingBMW.dayDeltaKmSigned",
   weekDeltaKmSigned: "0_userdata.0.LeasingBMW.weekDeltaKmSigned",
   monthDeltaKmSigned: "0_userdata.0.LeasingBMW.monthDeltaKmSigned",
@@ -46,6 +47,7 @@ const EMPTY_VALUES: DashboardValues = {
   overKmTotal: null,
   daysLeftLease: null,
   avgKmPerDayFromNow: null,
+  avgKmPerDayFromNowPrev2359: null,
   dayDeltaKmSigned: null,
   weekDeltaKmSigned: null,
   monthDeltaKmSigned: null,
@@ -335,6 +337,62 @@ function StatCard({
   );
 }
 
+function SollKmPerDayCard({
+  value,
+  prevValue,
+}: {
+  value: number | null;
+  prevValue: number | null;
+}) {
+  const range = useMemo(() => {
+    if (value === null) return null;
+    return { min: value - 1, max: value + 1 };
+  }, [value]);
+
+  const redPos = useMemo(() => {
+    if (value === null || !range) return null;
+    return Math.max(0, Math.min(1, (value - range.min) / (range.max - range.min)));
+  }, [value, range]);
+
+  const grayPos = useMemo(() => {
+    if (prevValue === null || !range) return null;
+    return Math.max(0, Math.min(1, (prevValue - range.min) / (range.max - range.min)));
+  }, [prevValue, range]);
+
+  const startLabel = range ? range.min.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "--";
+  const midLabel = range
+    ? ((range.min + range.max) / 2).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : "--";
+  const endLabel = range ? range.max.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "--";
+
+  return (
+    <View style={styles.statCard}>
+      <Text style={styles.statLabel}>Soll km/Tag ab jetzt</Text>
+      <View style={styles.sollCardRow}>
+        <Text style={styles.statValue}>{formatValue(value, "km")}</Text>
+        <View style={styles.sollScaleWrap}>
+          <View style={styles.sollScaleTopMarkerLane}>
+            {grayPos !== null ? (
+              <View style={[styles.sollMarkerTop, { left: `${grayPos * 100}%` }]} />
+            ) : null}
+          </View>
+          <View style={styles.sollScaleTrack} />
+          <View style={styles.sollScaleBottomMarkerLane}>
+            {redPos !== null ? (
+              <View style={[styles.sollMarkerBottom, { left: `${redPos * 100}%` }]} />
+            ) : null}
+          </View>
+          <View style={styles.sollScaleLabels}>
+            <Text style={styles.sollScaleLabel}>{startLabel}</Text>
+            <Text style={styles.sollScaleLabel}>{midLabel}</Text>
+            <Text style={styles.sollScaleLabel}>{endLabel}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -432,7 +490,10 @@ function DashboardScreen() {
                 <StatCard label="Rest-km gesamt" value={values.remainingKmTotalRaw} unit="km" />
                 <StatCard label="Über-km" value={values.overKmTotal} unit="km" />
                 <StatCard label="Tage bis Rückgabe" value={values.daysLeftLease} unit="Tage" />
-                <StatCard label="Soll km/Tag ab jetzt" value={values.avgKmPerDayFromNow} unit="km" />
+                <SollKmPerDayCard
+                  value={values.avgKmPerDayFromNow}
+                  prevValue={values.avgKmPerDayFromNowPrev2359}
+                />
                 <StatCard
                   label="Saldo heute"
                   value={values.dayDeltaKmSigned}
@@ -571,6 +632,63 @@ const styles = StyleSheet.create({
     padding: 12,
     minHeight: 90,
     justifyContent: "space-between",
+  },
+  sollCardRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  sollScaleWrap: {
+    flex: 1,
+    minWidth: 120,
+    gap: 2,
+  },
+  sollScaleTopMarkerLane: {
+    height: 10,
+    position: "relative",
+  },
+  sollScaleTrack: {
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(203, 213, 225, 0.8)",
+  },
+  sollScaleBottomMarkerLane: {
+    height: 10,
+    position: "relative",
+  },
+  sollMarkerTop: {
+    position: "absolute",
+    marginLeft: -6,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderBottomWidth: 8,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderBottomColor: "#94A3B8",
+  },
+  sollMarkerBottom: {
+    position: "absolute",
+    marginLeft: -6,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 8,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: "#DC2626",
+  },
+  sollScaleLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sollScaleLabel: {
+    color: "#CBD5E1",
+    fontSize: 10,
   },
   statLabel: {
     color: "#94A3B8",
